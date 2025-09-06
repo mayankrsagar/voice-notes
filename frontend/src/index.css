@@ -1,0 +1,37 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f6f8fa;
+}
+.app {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+.recorder {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.card textarea {
+  width: 100%;
+}
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+blockquote {
+  background: #eef;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #07f;
+  margin: 0.5rem 0;
+}
