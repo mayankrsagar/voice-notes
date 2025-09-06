@@ -1,5 +1,5 @@
 import Note from "../models/note.model.js";
-import { summarizeText, transcribeAudio } from "../services/openai.service.js";
+import { summarizeText } from "../services/openai.service.js";
 
 // GET /api/notes
 export const getNotes = async (_req, res, next) => {
@@ -16,7 +16,12 @@ export const createNote = async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ msg: "Audio file required" });
 
-    const transcript = await transcribeAudio(req.file.buffer);
+    // const transcript = await transcribeAudio(req.file.buffer);
+    const transcript = await openai.audio.transcriptions.create({
+      file: createReadStream(req.file.path),
+      model: "whisper-1",
+    });
+    unlinkSync(req.file.path); // tidy up
     const note = await Note.create({
       title: req.body.title || "Untitled",
       transcript,
