@@ -1,5 +1,26 @@
+// POST /api/notes  (multipart form: audio file + optional title)
+// export const createNote = async (req, res, next) => {
+//   try {
+//     if (!req.file) return res.status(400).json({ msg: "Audio file required" });
+//     // const transcript = await transcribeAudio(req.file.buffer);
+//     const transcript = await OpenAI.audio.transcriptions.create({
+//       file: createReadStream(req.file.path),
+//       model: "whisper-1",
+//     });
+//     unlinkSync(req.file.path); // tidy up
+//     const note = await Note.create({
+//       title: req.body.title || "Untitled",
+//       transcript,
+//     });
+//     res.status(201).json(note);
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+import { createReadStream, unlinkSync } from "fs";
+
 import Note from "../models/note.model.js";
-import { summarizeText } from "../services/openai.service.js";
+import { summarizeText, transcribeAudio } from "../services/openai.service.js"; // ← already wraps Whisper
 
 // GET /api/notes
 export const getNotes = async (_req, res, next) => {
@@ -11,17 +32,14 @@ export const getNotes = async (_req, res, next) => {
   }
 };
 
-// POST /api/notes  (multipart form: audio file + optional title)
 export const createNote = async (req, res, next) => {
   try {
     if (!req.file) return res.status(400).json({ msg: "Audio file required" });
 
-    // const transcript = await transcribeAudio(req.file.buffer);
-    const transcript = await openai.audio.transcriptions.create({
-      file: createReadStream(req.file.path),
-      model: "whisper-1",
-    });
+    // stream from disk (multer already wrote it to /tmp)
+    const transcript = await transcribeAudio(createReadStream(req.file.path));
     unlinkSync(req.file.path); // tidy up
+
     const note = await Note.create({
       title: req.body.title || "Untitled",
       transcript,

@@ -6,13 +6,22 @@ console.log(
   process.env.OPENAI_API_KEY ? "Loaded ✅" : "Missing ❌"
 );
 
-export const transcribeAudio = async (buffer) => {
-  const file = { buffer, mimetype: "audio/webm", originalname: "audio.webm" };
-  const resp = await openai.audio.transcriptions.create({
-    file,
+// export const transcribeAudio = async (buffer) => {
+//   const file = { buffer, mimetype: "audio/webm", originalname: "audio.webm" };
+//   const resp = await openai.audio.transcriptions.create({
+//     file,
+//     model: "whisper-1",
+//   });
+//   return resp.text.trim();
+// };
+
+export const transcribeAudio = async (input) => {
+  // input: Buffer | ReadStream
+  const { text } = await openai.audio.transcriptions.create({
+    file: input,
     model: "whisper-1",
   });
-  return resp.text.trim();
+  return text.trim();
 };
 
 export const summarizeText = async (text) => {
